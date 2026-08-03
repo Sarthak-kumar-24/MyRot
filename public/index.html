@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lust - Premium Gallery</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="bg-animation"></div>
+    <div id="particles"></div>
+
+    <!-- Public Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <div class="landing-content">
+            <h1 class="landing-logo">LUST</h1>
+            <p class="landing-subtitle">The Premium Private Collection</p>
+            <div class="landing-actions">
+                <button id="showLoginBtn" class="btn primary-btn glow-effect large-btn">Enter Admin Area</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard (Hidden by default) -->
+    <div id="dashboardPage" class="hidden">
+        <!-- Navbar -->
+        <nav class="navbar">
+            <div class="logo">
+                <i class="fa-solid fa-fire"></i> LUST
+            </div>
+            <div class="nav-actions">
+                <button id="adminAddBtn" class="btn primary-btn glow-effect"><i class="fa-solid fa-plus"></i> Add Video</button>
+                <button id="logoutBtn" class="btn outline-btn">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Controls (Filters, Sort) -->
+        <section class="controls-section">
+            <div class="search-bar">
+                <i class="fa-solid fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Search videos...">
+            </div>
+            <div class="filters">
+                <label class="favorite-toggle">
+                    <input type="checkbox" id="favoriteFilter">
+                    <i class="fa-solid fa-heart"></i> Favorites Only
+                </label>
+                <select id="sortSelect" class="custom-select">
+                    <option value="newest">Sort by: Newest</option>
+                    <option value="oldest">Sort by: Oldest</option>
+                    <option value="highestRating">Sort by: Highest Rating</option>
+                    <option value="lowestRating">Sort by: Lowest Rating</option>
+                    <option value="titleAsc">Sort by: Title (A-Z)</option>
+                    <option value="titleDesc">Sort by: Title (Z-A)</option>
+                </select>
+                <select id="categoryFilter" class="custom-select">
+                    <option value="all">All Categories</option>
+                    <option value="amateur">Amateur</option>
+                    <option value="professional">Professional</option>
+                    <option value="exclusive">Exclusive</option>
+                    <option value="vintage">Vintage</option>
+                    <option value="solo">Solo</option>
+                    <option value="couples">Couples</option>
+                    <option value="pov">POV</option>
+                </select>
+            </div>
+        </section>
+
+        <!-- Gallery Grid -->
+        <main class="gallery-container">
+            <div id="loadingIndicator" class="loading-indicator">
+                <div class="spinner"></div>
+                <p>Loading collection...</p>
+            </div>
+            
+            <div id="videoGrid" class="video-grid hidden">
+                <!-- Video Cards will be injected here via JS -->
+            </div>
+            
+            <div id="emptyState" class="empty-state hidden">
+                <i class="fa-solid fa-film"></i>
+                <h2>No videos found</h2>
+                <p>Upload some videos to get started.</p>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content glass-panel tilt-card">
+            <span class="close-btn" id="closeAuth">&times;</span>
+            <h2 id="authTitle">Restricted Access</h2>
+            <p style="text-align:center; color: var(--text-secondary); margin-bottom: 1.5rem;">Please login to view the gallery.</p>
+            <form id="authForm">
+                <div class="input-group">
+                    <label>Admin Username</label>
+                    <input type="text" id="username" required>
+                </div>
+                <div class="input-group">
+                    <label>Password</label>
+                    <input type="password" id="password" required>
+                </div>
+                <button type="submit" class="btn primary-btn full-width glow-effect" id="authSubmitBtn">Login</button>
+                <p id="authError" style="color: #ff0055; text-align: center; margin-top: 1rem; display: none;">Invalid credentials</p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add/Edit Video Modal -->
+    <div id="videoModal" class="modal">
+        <div class="modal-content glass-panel large-modal">
+            <span class="close-btn" id="closeVideoModal">&times;</span>
+            <h2 id="videoModalTitle">Add New Video</h2>
+            <form id="videoForm">
+                <input type="hidden" id="videoId">
+                <div class="input-group">
+                    <label>Title</label>
+                    <input type="text" id="videoTitle" required>
+                </div>
+                
+                <div class="input-group">
+                    <label>Cover Images (Upload multiple)</label>
+                    <div class="file-upload-wrapper">
+                        <input type="file" id="videoImages" accept="image/*" multiple class="file-input">
+                        <div class="file-upload-design">
+                            <i class="fa-solid fa-cloud-arrow-up"></i>
+                            <p>Drag & Drop or Click to Upload Pictures</p>
+                        </div>
+                    </div>
+                    <div id="imagePreviewContainer" class="image-preview-container"></div>
+                </div>
+
+                <div class="input-group">
+                    <label>Video Link (URL)</label>
+                    <input type="url" id="videoLink" required placeholder="https://example.com/video.mp4">
+                </div>
+                <div class="row">
+                    <div class="input-group">
+                        <label>Category</label>
+                        <select id="videoCategory" required>
+                            <option value="amateur">Amateur</option>
+                            <option value="professional">Professional</option>
+                            <option value="exclusive">Exclusive</option>
+                            <option value="vintage">Vintage</option>
+                            <option value="solo">Solo</option>
+                            <option value="couples">Couples</option>
+                            <option value="pov">POV</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label>Rating (1-5)</label>
+                        <input type="number" id="videoRating" min="1" max="5" step="0.1" required>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <textarea id="videoDescription" rows="3" required></textarea>
+                </div>
+                <button type="submit" class="btn primary-btn full-width glow-effect" id="saveVideoBtn">
+                    <span id="saveBtnText">Save Video</span>
+                    <i class="fa-solid fa-spinner fa-spin hidden" id="saveBtnSpinner"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Vanilla Tilt JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.0/vanilla-tilt.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
